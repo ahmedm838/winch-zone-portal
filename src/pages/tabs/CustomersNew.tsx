@@ -129,7 +129,7 @@ export default function CustomersNew() {
       <div className="grid md:grid-cols-2 gap-6">
         <UploadBox label="Commercial Register Copy" accept="image/*,application/pdf" onFiles={(f) => setCrFile(f[0] ?? null)} hint="Photo/PDF" />
         <UploadBox label="Tax ID Copy" accept="image/*,application/pdf" onFiles={(f) => setTaxFile(f[0] ?? null)} hint="Photo/PDF" />
-        <UploadBox label="Price list copy" accept="image/*,application/pdf" onFiles={(f) => setPriceListFile(f[0] ?? null)} hint="Photo/PDF" />
+        <UploadBox label="Price List Copy" accept="image/*,application/pdf" onFiles={(f) => setPriceListFile(f[0] ?? null)} hint="Photo/PDF" />
       </div>
 
       {msg ? <div className="text-sm text-slate-700 dark:text-slate-200">{msg}</div> : null}
