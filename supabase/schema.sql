@@ -51,6 +51,10 @@ insert into public.payments(name) values ('Cash'),('Bank Transfer') on conflict 
 create table if not exists public.customers (
   id uuid primary key default gen_random_uuid(),
   name text not null,
+  contact_name text,
+  telephone text,
+  email text,
+  price_list_copy_url text,
   commercial_register_no text,
   tax_id_no text,
   commercial_register_copy_url text,
@@ -59,6 +63,11 @@ create table if not exists public.customers (
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+
+alter table public.customers
+  add constraint customer_email_format check (email is null or email ~* '^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$');
+alter table public.customers
+  add constraint customer_phone_len check (telephone is null or length(telephone) between 7 and 20);
 
 alter table public.customers
   add constraint cr_max_6_digits check (commercial_register_no is null or (commercial_register_no ~ '^[0-9]{1,6}$'));

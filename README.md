@@ -56,3 +56,7 @@ Then use the Users roles tab.
 - Trips can be saved with **no photos**.
 - While trip status is **Pending**, you can upload/replace pickup & dropoff photos from **Edit trip**.
 - After approval, editing/uploading is blocked.
+
+
+### Customer extra fields
+Customers now include: contact name, telephone, email, and an optional **price list copy** file stored in `customer_docs` bucket.

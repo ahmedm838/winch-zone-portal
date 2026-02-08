@@ -55,17 +55,21 @@ export default function CustomersList() {
           <thead className="bg-slate-50 dark:bg-slate-900">
             <tr className="text-left">
               <th className="p-3">Name</th>
+              <th className="p-3">Contact</th>
+              <th className="p-3">Telephone</th>
+              <th className="p-3">Email</th>
               <th className="p-3">Commercial Register</th>
               <th className="p-3">Tax ID</th>
               <th className="p-3">CR Copy</th>
               <th className="p-3">Tax Copy</th>
+              <th className="p-3">Price list</th>
               <th className="p-3">Action</th>
             </tr>
           </thead>
           <tbody>
             {filtered.map((r) => (<Row key={r.id} row={r} onSave={saveRow} />))}
             {!filtered.length ? (
-              <tr><td className="p-4 text-slate-500" colSpan={6}>No customers</td></tr>
+              <tr><td className="p-4 text-slate-500" colSpan={9}>No customers</td></tr>
             ) : null}
           </tbody>
         </table>
@@ -76,22 +80,31 @@ export default function CustomersList() {
 
 function Row({ row, onSave }: { row: Customer; onSave: (id: string, patch: Partial<Customer>) => void }) {
   const [name, setName] = useState(row.name);
+  const [contact, setContact] = useState(row.contact_name ?? "");
+  const [tel, setTel] = useState(row.telephone ?? "");
+  const [email, setEmail] = useState(row.email ?? "");
   const [cr, setCr] = useState(row.commercial_register_no ?? "");
   const [tax, setTax] = useState(row.tax_id_no ?? "");
   const validCr = !cr || /^[0-9]{1,6}$/.test(cr);
   const validTax = !tax || /^[0-9]{3}-[0-9]{3}-[0-9]{3}$/.test(tax);
+  const validEmail = !email || /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(email);
+  const validTel = !tel || (tel.length >= 7 && tel.length <= 20);
 
   return (
     <tr className="border-t border-slate-200 dark:border-slate-800">
       <td className="p-3"><input value={name} onChange={(e) => setName(e.target.value)} className="w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 px-2 py-1" /></td>
+      <td className="p-3"><input value={contact} onChange={(e) => setContact(e.target.value)} className="w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 px-2 py-1" /></td>
+      <td className="p-3"><input value={tel} onChange={(e) => setTel(e.target.value)} className={"w-full rounded-xl border px-2 py-1 bg-white dark:bg-slate-950 " + (validTel ? "border-slate-200 dark:border-slate-800" : "border-red-500")} /></td>
+      <td className="p-3"><input value={email} onChange={(e) => setEmail(e.target.value)} className={"w-full rounded-xl border px-2 py-1 bg-white dark:bg-slate-950 " + (validEmail ? "border-slate-200 dark:border-slate-800" : "border-red-500")} /></td>
       <td className="p-3"><input value={cr} onChange={(e) => setCr(e.target.value)} className={"w-full rounded-xl border px-2 py-1 bg-white dark:bg-slate-950 " + (validCr ? "border-slate-200 dark:border-slate-800" : "border-red-500")} /></td>
       <td className="p-3"><input value={tax} onChange={(e) => setTax(e.target.value)} className={"w-full rounded-xl border px-2 py-1 bg-white dark:bg-slate-950 " + (validTax ? "border-slate-200 dark:border-slate-800" : "border-red-500")} /></td>
       <td className="p-3">{row.commercial_register_copy_url ? <a className="text-blue-600 dark:text-blue-400 underline" href={row.commercial_register_copy_url} target="_blank" rel="noreferrer">Open</a> : <span className="text-slate-500">—</span>}</td>
       <td className="p-3">{row.tax_id_copy_url ? <a className="text-blue-600 dark:text-blue-400 underline" href={row.tax_id_copy_url} target="_blank" rel="noreferrer">Open</a> : <span className="text-slate-500">—</span>}</td>
+      <td className="p-3">{row.price_list_copy_url ? <a className="text-blue-600 dark:text-blue-400 underline" href={row.price_list_copy_url} target="_blank" rel="noreferrer">Open</a> : <span className="text-slate-500">—</span>}</td>
       <td className="p-3">
         <button className="rounded-xl px-3 py-2 text-xs bg-slate-900 text-white hover:opacity-90 disabled:opacity-60"
-          disabled={!validCr || !validTax}
-          onClick={() => onSave(row.id, { name: name.trim() || row.name, commercial_register_no: cr || null, tax_id_no: tax || null })}
+          disabled={!validCr || !validTax || !validEmail || !validTel}
+          onClick={() => onSave(row.id, { name: name.trim() || row.name, contact_name: contact || null, telephone: tel || null, email: email || null, commercial_register_no: cr || null, tax_id_no: tax || null })}
         >
           Save
         </button>

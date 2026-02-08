@@ -3,10 +3,14 @@ import { supabase } from "../../lib/supabase";
 export type Customer = {
   id: string;
   name: string;
+  contact_name: string | null;
+  telephone: string | null;
+  email: string | null;
   commercial_register_no: string | null;
   tax_id_no: string | null;
   commercial_register_copy_url: string | null;
   tax_id_copy_url: string | null;
+  price_list_copy_url: string | null;
 };
 
 export type SimpleRow = { id: number; name: string };
@@ -14,7 +18,7 @@ export type SimpleRow = { id: number; name: string };
 export async function fetchCustomers(): Promise<Customer[]> {
   const { data, error } = await supabase
     .from("customers")
-    .select("id,name,commercial_register_no,tax_id_no,commercial_register_copy_url,tax_id_copy_url")
+    .select("id,name,contact_name,telephone,email,commercial_register_no,tax_id_no,commercial_register_copy_url,tax_id_copy_url,price_list_copy_url")
     .order("created_at", { ascending: false });
   if (error) throw error;
   return (data ?? []) as Customer[];
