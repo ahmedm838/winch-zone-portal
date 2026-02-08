@@ -11,10 +11,10 @@ type Row = {
   dropoff_location: string;
   price_per_trip: number;
   status: string;
-  customers?: { name: string } | null;
-  services?: { name: string } | null;
-  vehicles?: { name: string } | null;
-  payments?: { name: string } | null;
+  customers?: { name: string }[] | null;
+  services?: { name: string }[] | null;
+  vehicles?: { name: string }[] | null;
+  payments?: { name: string }[] | null;
 };
 
 export default function ExportTrips() {
@@ -40,7 +40,7 @@ export default function ExportTrips() {
 
       const { data, error } = await q;
       if (error) throw error;
-      setRows((data ?? []) as Row[]);
+      setRows((data ?? []) as unknown as Row[]);
     } catch (e: any) {
       setMsg(e?.message ?? "Failed to load");
     }
@@ -49,14 +49,14 @@ export default function ExportTrips() {
   const exportable = useMemo(() => rows.map(r => ({
     TripID: r.id,
     Date: fmtDate(r.trip_date),
-    Customer: r.customers?.name ?? "",
-    Service: r.services?.name ?? "",
-    Vehicle: r.vehicles?.name ?? "",
+    Customer: r.customers?.[0]?.name ?? "",
+    Service: r.services?.[0]?.name ?? "",
+    Vehicle: r.vehicles?.[0]?.name ?? "",
     Pickup: r.pickup_location,
     Dropoff: r.dropoff_location,
     Price: r.price_per_trip,
     PriceFormatted: fmtMoney(r.price_per_trip),
-    Payment: r.payments?.name ?? "",
+    Payment: r.payments?.[0]?.name ?? "",
     Status: r.status,
   })), [rows]);
 
@@ -113,11 +113,11 @@ export default function ExportTrips() {
             {rows.map(r => (
               <tr key={r.id} className="border-t border-slate-200 dark:border-slate-800">
                 <td className="p-3">#{r.id} — {fmtDate(r.trip_date)}</td>
-                <td className="p-3">{r.customers?.name ?? "—"}</td>
-                <td className="p-3">{r.services?.name ?? "—"}</td>
-                <td className="p-3">{r.vehicles?.name ?? "—"}</td>
+                <td className="p-3">{r.customers?.[0]?.name ?? "—"}</td>
+                <td className="p-3">{r.services?.[0]?.name ?? "—"}</td>
+                <td className="p-3">{r.vehicles?.[0]?.name ?? "—"}</td>
                 <td className="p-3">{fmtMoney(r.price_per_trip)}</td>
-                <td className="p-3">{r.payments?.name ?? "—"}</td>
+                <td className="p-3">{r.payments?.[0]?.name ?? "—"}</td>
                 <td className="p-3">{r.status}</td>
               </tr>
             ))}

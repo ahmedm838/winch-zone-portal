@@ -9,10 +9,10 @@ type Row = {
   dropoff_location: string;
   price_per_trip: number;
   status: "pending" | "approved";
-  customers?: { name: string } | null;
-  services?: { name: string } | null;
-  vehicles?: { name: string } | null;
-  payments?: { name: string } | null;
+  customers?: { name: string }[] | null;
+  services?: { name: string }[] | null;
+  vehicles?: { name: string }[] | null;
+  payments?: { name: string }[] | null;
 };
 
 export default function PendingTrips() {
@@ -30,7 +30,7 @@ export default function PendingTrips() {
       .eq("status", "pending")
       .order("id", { ascending: false });
     if (error) return setMsg(error.message);
-    setRows((data ?? []) as Row[]);
+    setRows((data ?? []) as unknown as Row[]);
   }
 
   async function approve(id: number) {
@@ -74,15 +74,15 @@ export default function PendingTrips() {
             {rows.map((r) => (
               <tr key={r.id} className="border-t border-slate-200 dark:border-slate-800">
                 <td className="p-3">#{r.id} — {fmtDate(r.trip_date)}</td>
-                <td className="p-3">{r.customers?.name ?? "—"}</td>
-                <td className="p-3">{r.services?.name ?? "—"}</td>
-                <td className="p-3">{r.vehicles?.name ?? "—"}</td>
+                <td className="p-3">{r.customers?.[0]?.name ?? "—"}</td>
+                <td className="p-3">{r.services?.[0]?.name ?? "—"}</td>
+                <td className="p-3">{r.vehicles?.[0]?.name ?? "—"}</td>
                 <td className="p-3">
                   <div className="text-xs">PU: {r.pickup_location}</div>
                   <div className="text-xs">DO: {r.dropoff_location}</div>
                 </td>
                 <td className="p-3">{fmtMoney(r.price_per_trip)}</td>
-                <td className="p-3">{r.payments?.name ?? "—"}</td>
+                <td className="p-3">{r.payments?.[0]?.name ?? "—"}</td>
                 <td className="p-3">
                   <button disabled={busy} onClick={() => approve(r.id)}
                     className="rounded-xl px-3 py-2 text-xs bg-slate-900 text-white hover:opacity-90 disabled:opacity-60">

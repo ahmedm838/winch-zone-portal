@@ -4,8 +4,7 @@ import { supabase } from "../../lib/supabase";
 type Row = {
   user_id: string;
   email: string;
-  role_id: number;
-  profiles?: { role_id: number; roles?: { name: string } | null } | null;
+  profiles?: { role_id: number; roles?: { name: string }[] | null }[] | null;
 };
 
 export default function UsersRoles() {
@@ -19,7 +18,7 @@ export default function UsersRoles() {
     setMsg(null);
     const { data, error } = await supabase.from("user_directory").select("user_id,email, profiles(role_id, roles(name))");
     if (error) return setMsg(error.message);
-    setRows((data ?? []) as Row[]);
+    setRows((data ?? []) as unknown as Row[]);
   }
 
   async function setRole(user_id: string, role_id: number) {
@@ -56,7 +55,8 @@ export default function UsersRoles() {
           </thead>
           <tbody>
             {rows.map((r) => {
-              const roleName = r.profiles?.roles?.name ?? (r.profiles?.role_id === 1 ? "admin" : "user");
+              const p = r.profiles?.[0];
+              const roleName = p?.roles?.[0]?.name ?? (p?.role_id === 1 ? "admin" : "user");
               return (
                 <tr key={r.user_id} className="border-t border-slate-200 dark:border-slate-800">
                   <td className="p-3">{r.email}</td>
