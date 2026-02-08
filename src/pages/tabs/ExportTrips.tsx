@@ -4,6 +4,12 @@ import { supabase } from "../../lib/supabase";
 import { fetchCustomers, Customer } from "./_shared";
 import { fmtDate, fmtMoney } from "../../lib/format";
 
+function relName(rel: any): string {
+  if (!rel) return "—";
+  if (Array.isArray(rel)) return rel?.[0]?.name ?? "—";
+  return rel?.name ?? "—";
+}
+
 type Row = {
   id: number;
   trip_date: string;
@@ -113,11 +119,11 @@ export default function ExportTrips() {
             {rows.map(r => (
               <tr key={r.id} className="border-t border-slate-200 dark:border-slate-800">
                 <td className="p-3">#{r.id} — {fmtDate(r.trip_date)}</td>
-                <td className="p-3">{r.customers?.[0]?.name ?? "—"}</td>
-                <td className="p-3">{r.services?.[0]?.name ?? "—"}</td>
-                <td className="p-3">{r.vehicles?.[0]?.name ?? "—"}</td>
+                <td className="p-3">{relName(r.customers)}</td>
+                <td className="p-3">{relName(r.services)}</td>
+                <td className="p-3">{relName(r.vehicles)}</td>
                 <td className="p-3">{fmtMoney(r.price_per_trip)}</td>
-                <td className="p-3">{r.payments?.[0]?.name ?? "—"}</td>
+                <td className="p-3">{relName(r.payments)}</td>
                 <td className="p-3">{r.status}</td>
               </tr>
             ))}
