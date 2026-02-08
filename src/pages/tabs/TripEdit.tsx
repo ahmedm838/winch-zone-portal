@@ -87,6 +87,8 @@ useEffect(() => {
 
 
   const canEditCollection = isAdmin;
+  const collectionDirty = !!row && isAdmin && (collectionId ?? null) !== (row.collection_id ?? null);
+  const canSave = (!busy) && (canEdit || collectionDirty);
   const canEdit = row?.status === "pending";
 
   async function save() {
@@ -314,7 +316,7 @@ useEffect(() => {
   </div>
 </div>
 
-          <button disabled={!canEdit || busy} onClick={save}
+          <button disabled={!canSave} onClick={save}
             className="rounded-xl px-4 py-2 text-sm bg-slate-900 text-white hover:opacity-90 disabled:opacity-60">
             {busy ? "Saving..." : "Save changes"}
           </button>

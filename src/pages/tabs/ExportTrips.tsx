@@ -38,7 +38,7 @@ export default function ExportTrips() {
     setMsg(null);
     try {
       let q = supabase.from("trips")
-        .select("id,trip_date,pickup_location,dropoff_location,price_per_trip,status, customers(name), services(name), vehicles(name), payments(name)")
+        .select("id,trip_date,pickup_location,dropoff_location,price_per_trip,status, customers(name), services(name), vehicles(name), payments(name),collection(name)")
         .order("id", { ascending: false });
 
       if (customerId) q = q.eq("customer_id", customerId);
@@ -113,7 +113,8 @@ export default function ExportTrips() {
           <thead className="bg-slate-50 dark:bg-slate-900">
             <tr className="text-left">
               <th className="p-3">Trip</th><th className="p-3">Customer</th><th className="p-3">Service</th><th className="p-3">Vehicle</th>
-              <th className="p-3">Price</th><th className="p-3">Payment</th><th className="p-3">Status</th>
+              <th className="p-3">Price</th><th className="p-3">Payment</th>
+              <th className="p-3">Collection</th><th className="p-3">Status</th>
             </tr>
           </thead>
           <tbody>
@@ -125,6 +126,8 @@ export default function ExportTrips() {
                 <td className="p-3">{relName(r.vehicles)}</td>
                 <td className="p-3">{fmtMoney(r.price_per_trip)}</td>
                 <td className="p-3">{relName(r.payments)}</td>
+                <td className="p-3">{relName(r.collection)}</td>
+                <td className="p-3"></td>
                 <td className="p-3">{r.status}</td>
               </tr>
             ))}
