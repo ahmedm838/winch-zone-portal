@@ -87,9 +87,9 @@ useEffect(() => {
 
 
   const canEditCollection = isAdmin;
+  const canEdit = row?.status === "pending";
   const collectionDirty = !!row && isAdmin && (collectionId ?? null) !== (row.collection_id ?? null);
   const canSave = (!busy) && (canEdit || collectionDirty);
-  const canEdit = row?.status === "pending";
 
   async function save() {
     if (!row) return;
