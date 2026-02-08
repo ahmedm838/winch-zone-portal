@@ -42,8 +42,8 @@ export default function TripRecord() {
     if (!dropoff.trim()) return "Drop off location is required.";
     if (!Number.isFinite(priceNum) || priceNum < 100 || priceNum > 99999) return "Price must be 3 to 5 digits.";
     if (!paymentId) return "Payment is required.";
-    if (pickupFiles.length !== 4) return "Pick up photos must be 4 files.";
-    if (dropoffFiles.length !== 4) return "Drop off photos must be 4 files.";
+    if (pickupFiles.length > 0 && pickupFiles.length !== 4) return "Pick up photos must be 4 files (or leave empty to upload later).";
+    if (dropoffFiles.length > 0 && dropoffFiles.length !== 4) return "Drop off photos must be 4 files (or leave empty to upload later).";
     return null;
   }
 
@@ -78,17 +78,24 @@ export default function TripRecord() {
 
       const tripId = ins.id as number;
       const pu: string[] = [];
-      const dof: string[] = [];
+const dof: string[] = [];
 
-      for (let i = 0; i < pickupFiles.length; i++) {
-        pu.push(await uploadToBucket("trip_photos", `${tripId}/pickup_${i+1}_${pickupFiles[i].name}`, pickupFiles[i]));
-      }
-      for (let i = 0; i < dropoffFiles.length; i++) {
-        dof.push(await uploadToBucket("trip_photos", `${tripId}/dropoff_${i+1}_${dropoffFiles[i].name}`, dropoffFiles[i]));
-      }
+if (pickupFiles.length) {
+  for (let i = 0; i < pickupFiles.length; i++) {
+    pu.push(await uploadToBucket("trip_photos", `${tripId}/pickup_${i + 1}_${pickupFiles[i].name}`, pickupFiles[i]));
+  }
+}
+if (dropoffFiles.length) {
+  for (let i = 0; i < dropoffFiles.length; i++) {
+    dof.push(await uploadToBucket("trip_photos", `${tripId}/dropoff_${i + 1}_${dropoffFiles[i].name}`, dropoffFiles[i]));
+  }
+}
 
-      const { error: upErr } = await supabase.from("trips").update({ pickup_photos: pu, dropoff_photos: dof }).eq("id", tripId);
-      if (upErr) throw upErr;
+if (pu.length || dof.length) {
+  const { error: upErr } = await supabase.from("trips").update({ pickup_photos: pu, dropoff_photos: dof }).eq("id", tripId);
+  if (upErr) throw upErr;
+}
+
 
       setMsg("Trip recorded (Pending).");
       setTripDate(""); setCustomerId(""); setServiceId(""); setVehicleId("");
@@ -105,7 +112,7 @@ export default function TripRecord() {
     <div className="space-y-6">
       <div>
         <div className="text-xl font-semibold text-slate-900 dark:text-slate-100">Record trip</div>
-        <div className="text-xs text-slate-500">Admin & User. Requires 4 pickup + 4 dropoff photos.</div>
+        <div className="text-xs text-slate-500">Admin & User. Photos are optional now (you can upload later while trip is Pending). If you upload, use exactly 4 pickup + 4 dropoff.</div>
       </div>
 
       <div className="grid md:grid-cols-2 gap-4">

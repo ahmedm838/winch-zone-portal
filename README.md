@@ -50,3 +50,9 @@ Then use the Users roles tab.
 ## If the deployed page is blank
 - Ensure `vite.config.ts` base matches repo name: `/winch-zone/`.
 - In browser DevTools Console, check for 404 assets or `Invalid supabaseUrl`.
+
+
+### Photos behavior
+- Trips can be saved with **no photos**.
+- While trip status is **Pending**, you can upload/replace pickup & dropoff photos from **Edit trip**.
+- After approval, editing/uploading is blocked.
