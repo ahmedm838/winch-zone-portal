@@ -10,6 +10,7 @@ function relName(rel: any): string {
 
 type Row = {
   id: number;
+  trip_no?: string | null;
   trip_date: string;
   pickup_location: string;
   dropoff_location: string;
