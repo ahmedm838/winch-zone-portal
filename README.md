@@ -60,3 +60,7 @@ Then use the Users roles tab.
 
 ### Customer extra fields
 Customers now include: contact name, telephone, email, and an optional **price list copy** file stored in `customer_docs` bucket.
+
+
+### Collection status
+A new lookup table `public.collection` is added with values: Non-invoiced, Invoiced, Under-collection, Collected. Trips include `collection_id` (admin can edit even after approval).

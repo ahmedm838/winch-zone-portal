@@ -19,6 +19,7 @@ type Row = {
   services?: { name: string }[] | null;
   vehicles?: { name: string }[] | null;
   payments?: { name: string }[] | null;
+  collection?: { name: string }[] | null;
 };
 
 export default function PendingTrips() {
@@ -73,6 +74,7 @@ export default function PendingTrips() {
               <th className="p-3">Locations</th>
               <th className="p-3">Price</th>
               <th className="p-3">Payment</th>
+              <th className="p-3">Collection</th>
               <th className="p-3">Action</th>
             </tr>
           </thead>
@@ -88,7 +90,10 @@ export default function PendingTrips() {
                   <div className="text-xs">DO: {r.dropoff_location}</div>
                 </td>
                 <td className="p-3">{fmtMoney(r.price_per_trip)}</td>
-                <td className="p-3">{relName(r.payments)}</td>
+                <td className="p-3">{relName(r.payments)}
+                </td>
+                <td className="p-3">{relName(r.collection)}</td>
+                <td className="p-3"></td>
                 <td className="p-3">
                   <button disabled={busy} onClick={() => approve(r.id)}
                     className="rounded-xl px-3 py-2 text-xs bg-slate-900 text-white hover:opacity-90 disabled:opacity-60">

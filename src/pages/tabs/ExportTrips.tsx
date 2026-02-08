@@ -21,6 +21,7 @@ type Row = {
   services?: { name: string }[] | null;
   vehicles?: { name: string }[] | null;
   payments?: { name: string }[] | null;
+  collection?: { name: string }[] | null;
 };
 
 export default function ExportTrips() {

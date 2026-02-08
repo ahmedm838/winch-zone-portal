@@ -16,6 +16,7 @@ type TripRow = {
   dropoff_location: string;
   price_per_trip: number;
   payment_id: number;
+  collection_id: number | null;
   pickup_photos?: string[];
   dropoff_photos?: string[];
 };
@@ -42,7 +43,7 @@ export default function TripEdit() {
     setMsg(null);
     const { data, error } = await supabase
       .from("trips")
-      .select("id,trip_date,status,customer_id,service_id,vehicle_id,pickup_location,dropoff_location,price_per_trip,payment_id,pickup_photos,dropoff_photos")
+      .select("id,trip_date,status,customer_id,service_id,vehicle_id,pickup_location,dropoff_location,price_per_trip,payment_id,collection_id,pickup_photos,dropoff_photos")
       .order("id", { ascending: false })
       .limit(200);
     if (error) return setMsg(error.message);
@@ -54,6 +55,7 @@ export default function TripEdit() {
     setRow(r);
   }, [selectedId, trips]);
 
+  const canEditCollection = isAdmin;
   const canEdit = row?.status === "pending";
 
   async function save() {
@@ -174,6 +176,24 @@ export default function TripEdit() {
                 {masters?.payments?.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
               </select>
             </div>
+<div>
+  <label className="text-sm text-slate-700 dark:text-slate-200">Collection status</label>
+  <select
+    value={collectionId ?? ""}
+    onChange={(e) => setCollectionId(e.target.value ? Number(e.target.value) : null)}
+    disabled={!canEditCollection || busy}
+    className="mt-1 w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 px-3 py-2 disabled:opacity-60"
+  >
+    <option value="">—</option>
+    {collections.map((c) => (
+      <option key={c.id} value={c.id}>{c.name}</option>
+    ))}
+  </select>
+  <div className="mt-1 text-xs text-slate-500">
+    Admin only. Can be updated even after approval.
+  </div>
+</div>
+
           </div>
 
 <div className="border border-slate-200 dark:border-slate-800 rounded-2xl p-4">
