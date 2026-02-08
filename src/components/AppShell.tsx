@@ -30,7 +30,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <div className="min-h-screen bg-white text-slate-900 dark:bg-slate-950 dark:text-slate-100">
       <header className="sticky top-0 z-10 border-b border-slate-200 dark:border-slate-800 bg-white/90 dark:bg-slate-950/90 backdrop-blur">
-        <div className="mx-auto max-w-6xl px-4 py-3 flex items-center justify-between">
+        <div className="mx-auto w-full max-w-none px-2 md:px-3 py-2.5 flex items-center justify-between">
           <Link to="/dashboard" className="flex items-center gap-3">
             <img src={logo} alt="Winch Zone" className="h-10 w-auto" />
             <div>
@@ -54,7 +54,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </div>
       </header>
 
-      <div className="mx-auto max-w-6xl px-4 py-6 grid grid-cols-1 md:grid-cols-[260px_1fr] gap-6">
+      <div className="mx-auto w-full max-w-none px-2 md:px-3 py-4 grid grid-cols-1 md:grid-cols-[220px_1fr] gap-4">
         <aside className="border border-slate-200 dark:border-slate-800 rounded-2xl p-3 h-fit bg-white text-slate-900 dark:bg-slate-950 dark:text-slate-100">
           <div className="px-2 py-2 text-xs text-slate-500">Dashboard</div>
           <nav className="flex flex-col">
@@ -75,7 +75,7 @@ export function AppShell({ children }: { children: React.ReactNode }) {
           </nav>
         </aside>
 
-        <main className="border border-slate-200 dark:border-slate-800 rounded-2xl p-4 md:p-6 bg-white text-slate-900 dark:bg-slate-950 dark:text-slate-100">
+        <main className="border border-slate-200 dark:border-slate-800 rounded-2xl p-3 md:p-4 bg-white text-slate-900 dark:bg-slate-950 dark:text-slate-100">
           {children}
         </main>
       </div>
