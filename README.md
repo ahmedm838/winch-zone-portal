@@ -45,3 +45,8 @@ update public.profiles set role_id = 1 where user_id = 'YOUR_USER_UUID';
 ```
 Then use the Users roles tab.
 
+
+
+## If the deployed page is blank
+- Ensure `vite.config.ts` base matches repo name: `/winch-zone/`.
+- In browser DevTools Console, check for 404 assets or `Invalid supabaseUrl`.
