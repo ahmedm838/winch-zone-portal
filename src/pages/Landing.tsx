@@ -10,6 +10,7 @@ export default function Landing() {
   const nav = useNavigate();
   const [mode, setMode] = useState<Mode>("login");
   const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [msg, setMsg] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
@@ -25,7 +26,15 @@ export default function Landing() {
     setBusy(true);
     setMsg(null);
     try {
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
+let loginEmail = email.trim();
+if (!loginEmail.includes("@")) {
+  const u = loginEmail.trim();
+  const { data, error: rpcErr } = await supabase.rpc("email_for_username", { p_username: u.toLowerCase() });
+  if (rpcErr) throw rpcErr;
+  if (!data) throw new Error("Username not found");
+  loginEmail = String(data);
+}
+const { error } = await supabase.auth.signInWithPassword({ email: loginEmail, password });
       if (error) throw error;
       nav("/dashboard");
     } catch (err: any) {
@@ -41,11 +50,16 @@ export default function Landing() {
     setMsg(null);
     try {
       const redirectTo = window.location.origin + window.location.pathname + "#/";
-      const { error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: { emailRedirectTo: redirectTo },
-      });
+const uname = username.trim().toLowerCase();
+if (!uname) throw new Error("Username is required");
+const { error } = await supabase.auth.signUp({
+  email,
+  password,
+  options: {
+    emailRedirectTo: redirectTo,
+    data: { username: uname },
+  },
+});
       if (error) throw error;
       setMsg("Signup created. Check your email for verification code/link, then login.");
       setMode("login");
@@ -92,12 +106,36 @@ export default function Landing() {
 
         <form onSubmit={mode==="login" ? onLogin : mode==="signup" ? onSignup : onForgot} className="space-y-4">
           <div>
-            <label className="text-sm text-slate-700 dark:text-slate-200">Email</label>
-            <input value={email} onChange={(e)=>setEmail(e.target.value)} type="email" required
-              className="mt-1 w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 px-3 py-2 text-slate-900 dark:text-slate-100" />
-          </div>
+  <label className="text-sm text-slate-700 dark:text-slate-200">
+    {mode === "login" ? "Username or Email" : "Email"}
+  </label>
+  <input
+    value={email}
+    onChange={(e) => setEmail(e.target.value)}
+    type={mode === "login" ? "text" : "email"}
+    required
+    className="mt-1 w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 px-3 py-2 text-slate-900 dark:text-slate-100"
+  />
+  {mode === "login" ? (
+    <div className="text-xs text-slate-500 mt-1">You can login using your username or email.</div>
+  ) : null}
+</div>
 
-          {mode !== "forgot" ? (
+          {mode === "signup" ? (
+  <div>
+    <label className="text-sm text-slate-700 dark:text-slate-200">Username</label>
+    <input
+      value={username}
+      onChange={(e) => setUsername(e.target.value)}
+      type="text"
+      required
+      className="mt-1 w-full rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-950 px-3 py-2 text-slate-900 dark:text-slate-100"
+    />
+    <div className="text-xs text-slate-500 mt-1">Lowercase recommended. Must be unique.</div>
+  </div>
+) : null}
+
+{mode !== "forgot" ? (
             <div>
               <label className="text-sm text-slate-700 dark:text-slate-200">Password</label>
               <input value={password} onChange={(e)=>setPassword(e.target.value)} type="password" required minLength={6}

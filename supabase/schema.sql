@@ -15,14 +15,18 @@ create table if not exists public.profiles (
 create table if not exists public.user_directory (
   user_id uuid primary key references auth.users(id) on delete cascade,
   email text not null,
+  username text,
   created_at timestamptz not null default now()
 );
 
+create unique index if not exists user_directory_username_unique on public.user_directory (lower(username)) where username is not null;
 create or replace function public.handle_new_user()
 returns trigger as $$
 begin
   insert into public.profiles (user_id, role_id) values (new.id, 2) on conflict do nothing;
-  insert into public.user_directory (user_id, email) values (new.id, new.email) on conflict do nothing;
+  insert into public.user_directory (user_id, email, username)
+  values (new.id, new.email, nullif(trim(lower(new.raw_user_meta_data->>'username')), ''))
+  on conflict do nothing;
   return new;
 end;
 $$ language plpgsql security definer;
@@ -231,3 +235,21 @@ execute function public.trips_set_trip_no();
 -- Backfill trip_no for existing rows (run once after deploying, if needed)
 -- This will generate sequential numbers by trip_date per year.
 -- Note: if you already have trip_no values, this will skip them.
+
+
+-- RPC: resolve email from username for login (callable by anon)
+create or replace function public.email_for_username(p_username text)
+returns text
+language sql
+security definer
+stable
+as $$
+  select email
+  from public.user_directory
+  where lower(username) = lower(p_username)
+  limit 1;
+$$;
+
+revoke all on function public.email_for_username(text) from public;
+grant execute on function public.email_for_username(text) to anon, authenticated;
+
