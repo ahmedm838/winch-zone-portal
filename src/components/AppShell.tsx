@@ -8,13 +8,13 @@ import { useEffect, useState } from "react";
 type Tab = { to: string; label: string; roles: RoleName[] };
 
 const tabs: Tab[] = [
-  { to: "/dashboard/customers/new", label: "New customer", roles: ["admin"] },
-  { to: "/dashboard/customers", label: "Edit/Show customer", roles: ["admin"] },
-  { to: "/dashboard/trips/record", label: "Record trip", roles: ["admin", "user"] },
-  { to: "/dashboard/trips/edit", label: "Edit trip", roles: ["admin", "user"] },
-  { to: "/dashboard/trips/pending", label: "Pending trips", roles: ["admin"] },
-  { to: "/dashboard/trips/export", label: "Export trips", roles: ["admin"] },
-  { to: "/dashboard/users", label: "Users roles", roles: ["admin"] },
+  { to: "/dashboard/customers/new", label: "New Customer", roles: ["admin"] },
+  { to: "/dashboard/customers", label: "Edit/Show Customer", roles: ["admin"] },
+  { to: "/dashboard/trips/record", label: "Record Trip", roles: ["admin", "user"] },
+  { to: "/dashboard/trips/edit", label: "Edit Trip", roles: ["admin", "user"] },
+  { to: "/dashboard/trips/pending", label: "Pending Trips", roles: ["admin"] },
+  { to: "/dashboard/trips/export", label: "Export Trips", roles: ["admin"] },
+  { to: "/dashboard/users", label: "Users Roles", roles: ["admin"] },
 ];
 
 export function AppShell({ children }: { children: React.ReactNode }) {
