@@ -2,7 +2,8 @@ const KEY = "wz_theme";
 
 export function initTheme() {
   const saved = localStorage.getItem(KEY);
-  const isDark = saved ? saved === "dark" : window.matchMedia?.("(prefers-color-scheme: dark)")?.matches;
+  const isDark = saved ? saved === "dark" : true;
+  if (!saved) localStorage.setItem(KEY, "dark");
   document.documentElement.classList.toggle("dark", !!isDark);
 }
 
